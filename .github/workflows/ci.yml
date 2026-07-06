@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  analyze-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Lint
+        run: ruff check deploylens tests
+
+      - name: Test
+        run: pytest
+
+      - name: Build sample app image
+        run: docker build -t deploylens-sample:${{ github.sha }} sample-app
+
+      - name: Generate DeployLens report
+        run: python -m deploylens scan manifests/base --output reports/deploylens-report.md --json-output reports/deploylens-report.json --fail-threshold 101
+
+      - name: Add report to job summary
+        run: cat reports/deploylens-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload DeployLens report
+        uses: actions/upload-artifact@v4
+        with:
+          name: deploylens-risk-report
+          path: |
+            reports/deploylens-report.md
+            reports/deploylens-report.json

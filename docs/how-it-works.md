@@ -1,0 +1,58 @@
+# How DeployLens Works
+
+DeployLens has three moving parts.
+
+## 1. Sample App
+
+The `sample-app/` folder contains a tiny HTTP service.
+
+This app is not the main star. It exists so we have something real to containerize, deploy, scan, and improve.
+
+## 2. Kubernetes Manifests
+
+The `manifests/base/` folder describes how the sample app should run in Kubernetes.
+
+Version 1 intentionally includes some risky choices:
+
+- one replica
+- `latest` image tag
+- no CPU or memory limits
+- no liveness/readiness probes
+- public `LoadBalancer` service
+
+That gives DeployLens real problems to detect.
+
+## 3. Analyzer CLI
+
+The `deploylens/` package is our custom Python CLI.
+
+When you run:
+
+```bash
+python -m deploylens scan manifests/base
+```
+
+DeployLens:
+
+1. Finds YAML files
+2. Loads Kubernetes resources
+3. Checks each resource against rules
+4. Adds risk points for each issue
+5. Estimates monthly cost from CPU and memory requests
+6. Generates Markdown and JSON reports
+7. Exits with failure if the score crosses the configured threshold
+
+## Why This Is DevOps
+
+This project teaches the real DevOps workflow:
+
+- Developers change app and deployment code
+- CI runs automatically
+- Deployment manifests are inspected before production
+- Risk is explained clearly
+- Reports are stored as CI artifacts
+- Later, the same pipeline can deploy to Kubernetes
+
+The important mindset is:
+
+> DevOps is not only deploying. DevOps is making deployment safer, repeatable, observable, and recoverable.

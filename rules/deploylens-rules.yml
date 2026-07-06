@@ -1,0 +1,17 @@
+rules:
+  IMG_MUTABLE_TAG:
+    points: 22
+  K8S_MISSING_REQUESTS:
+    points: 18
+  K8S_MISSING_LIMITS:
+    points: 18
+  K8S_PUBLIC_LOADBALANCER:
+    points: 14
+  K8S_REPLICA_SINGLE:
+    points: 12
+  K8S_MISSING_READINESS:
+    points: 12
+  K8S_MISSING_LIVENESS:
+    points: 10
+  OPS_MISSING_ROLLBACK_DOC:
+    points: 10
