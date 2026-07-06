@@ -35,16 +35,24 @@ jobs:
       - name: Build sample app image
         run: docker build -t deploylens-sample:${{ github.sha }} sample-app
 
-      - name: Generate DeployLens report
-        run: python -m deploylens scan manifests/base --output reports/deploylens-report.md --json-output reports/deploylens-report.json --fail-threshold 101
+      - name: Generate dev DeployLens report
+        run: python -m deploylens scan manifests/dev --environment dev --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json --fail-threshold 101
 
-      - name: Add report to job summary
-        run: cat reports/deploylens-report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Generate prod DeployLens report
+        run: python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80
+
+      - name: Add reports to job summary
+        run: |
+          cat reports/deploylens-dev-report.md >> "$GITHUB_STEP_SUMMARY"
+          printf '\n---\n\n' >> "$GITHUB_STEP_SUMMARY"
+          cat reports/deploylens-prod-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload DeployLens report
         uses: actions/upload-artifact@v4
         with:
           name: deploylens-risk-report
           path: |
-            reports/deploylens-report.md
-            reports/deploylens-report.json
+            reports/deploylens-dev-report.md
+            reports/deploylens-dev-report.json
+            reports/deploylens-prod-report.md
+            reports/deploylens-prod-report.json

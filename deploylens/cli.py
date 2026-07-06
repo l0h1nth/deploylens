@@ -16,6 +16,11 @@ def build_parser() -> argparse.ArgumentParser:
     scan = subparsers.add_parser("scan", help="Scan Kubernetes YAML manifests.")
     scan.add_argument("path", type=Path, help="File or directory containing Kubernetes YAML.")
     scan.add_argument(
+        "--environment",
+        default="default",
+        help="Environment name shown in the generated report, for example dev or prod.",
+    )
+    scan.add_argument(
         "--output",
         type=Path,
         default=Path("reports/deploylens-report.md"),
@@ -41,7 +46,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.command == "scan":
-        report = scan_path(args.path)
+        report = scan_path(args.path, environment=args.environment)
         markdown = render_markdown(report)
 
         args.output.parent.mkdir(parents=True, exist_ok=True)

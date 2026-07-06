@@ -10,9 +10,9 @@ This app is not the main star. It exists so we have something real to containeri
 
 ## 2. Kubernetes Manifests
 
-The `manifests/base/` folder describes how the sample app should run in Kubernetes.
+The `manifests/` folder describes how the sample app should run in Kubernetes.
 
-Version 1 intentionally includes some risky choices:
+`manifests/dev/` intentionally includes some risky choices:
 
 - one replica
 - `latest` image tag
@@ -20,7 +20,15 @@ Version 1 intentionally includes some risky choices:
 - no liveness/readiness probes
 - public `LoadBalancer` service
 
-That gives DeployLens real problems to detect.
+That gives DeployLens real problems to detect while you are learning.
+
+`manifests/prod/` shows the safer production version:
+
+- two replicas
+- pinned image tag
+- CPU and memory requests and limits
+- liveness and readiness probes
+- internal `ClusterIP` service
 
 ## 3. Analyzer CLI
 
@@ -29,7 +37,8 @@ The `deploylens/` package is our custom Python CLI.
 When you run:
 
 ```bash
-python -m deploylens scan manifests/base
+python -m deploylens scan manifests/dev --environment dev
+python -m deploylens scan manifests/prod --environment prod
 ```
 
 DeployLens:
@@ -41,6 +50,8 @@ DeployLens:
 5. Estimates monthly cost from CPU and memory requests
 6. Generates Markdown and JSON reports
 7. Exits with failure if the score crosses the configured threshold
+
+In CI, dev is scanned in report-only mode. Prod is scanned with a real gate so high-risk production manifests fail the pipeline.
 
 ## Why This Is DevOps
 

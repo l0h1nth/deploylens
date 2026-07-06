@@ -37,7 +37,8 @@ DeployLens scans those signals and creates a simple report that a developer, Dev
 sample-app/              # Small app we deploy and analyze
 deploylens/              # The custom DevOps analyzer CLI
 rules/                   # Rule configuration and scoring weights
-manifests/base/          # Kubernetes manifests scanned by DeployLens
+manifests/dev/           # Dev Kubernetes manifests with intentional learning risks
+manifests/prod/          # Production-style Kubernetes manifests gated by CI
 reports/                 # Generated report output
 docs/                    # Learning notes, architecture, deployment guide
 tests/                   # Analyzer tests
@@ -63,13 +64,14 @@ pytest
 Generate a deployment risk report:
 
 ```bash
-python -m deploylens scan manifests/base --output reports/deploylens-report.md --json-output reports/deploylens-report.json
+make scan
 ```
 
 Open the report:
 
 ```bash
-sed -n '1,220p' reports/deploylens-report.md
+sed -n '1,220p' reports/deploylens-dev-report.md
+sed -n '1,220p' reports/deploylens-prod-report.md
 ```
 
 ## Run The Sample App
@@ -91,7 +93,7 @@ curl http://127.0.0.1:8080/
 Install a local Kubernetes tool such as `kind` or `minikube`, then:
 
 ```bash
-kubectl apply -k manifests/base
+kubectl apply -k manifests/dev
 kubectl -n deploylens get pods
 kubectl -n deploylens port-forward svc/deploylens-sample 8080:80
 curl http://127.0.0.1:8080/healthz
@@ -110,7 +112,8 @@ The GitHub Actions workflow:
 - run Python tests
 - lint the code
 - build the sample app image
-- generate a DeployLens risk report
+- generate dev and prod DeployLens risk reports
+- block production manifests when the risk score is 80 or higher
 - upload the report as a CI artifact
 
 ## Interview Pitch

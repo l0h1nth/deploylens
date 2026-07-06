@@ -42,6 +42,7 @@ class CostEstimate:
 
 @dataclass(frozen=True)
 class ScanReport:
+    environment: str
     scanned_files: list[str]
     findings: list[Finding] = field(default_factory=list)
     cost_estimate: CostEstimate = field(default_factory=CostEstimate)
@@ -62,6 +63,7 @@ class ScanReport:
 
     def to_dict(self) -> dict[str, object]:
         return {
+            "environment": self.environment,
             "risk_score": self.risk_score,
             "risk_level": self.risk_level,
             "scanned_files": self.scanned_files,

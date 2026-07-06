@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: deploylens-sample
+  namespace: deploylens-prod
+  labels:
+    app.kubernetes.io/name: deploylens-sample
+    app.kubernetes.io/environment: prod
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: deploylens-sample
+    app.kubernetes.io/environment: prod
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

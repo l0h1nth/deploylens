@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploylens-sample
+  namespace: deploylens-prod
+  labels:
+    app.kubernetes.io/name: deploylens-sample
+    app.kubernetes.io/environment: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: deploylens-sample
+      app.kubernetes.io/environment: prod
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: deploylens-sample
+        app.kubernetes.io/environment: prod
+    spec:
+      containers:
+        - name: web
+          image: deploylens-sample:v0.1.0
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

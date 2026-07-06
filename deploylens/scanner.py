@@ -7,7 +7,7 @@ from deploylens.parser import discover_yaml_files, load_yaml_documents
 from deploylens.rules import check_deployment, check_rollback_docs, check_service, load_rule_points
 
 
-def scan_path(path: Path) -> ScanReport:
+def scan_path(path: Path, environment: str = "default") -> ScanReport:
     yaml_files = discover_yaml_files(path)
     rule_points = load_rule_points()
     findings: list[Finding] = []
@@ -26,6 +26,7 @@ def scan_path(path: Path) -> ScanReport:
     findings.extend(check_rollback_docs(repo_root, rule_points))
 
     return ScanReport(
+        environment=environment,
         scanned_files=[str(file) for file in yaml_files],
         findings=findings,
         cost_estimate=estimate_resource_cost(resources),

@@ -28,6 +28,7 @@ def render_markdown(report: ScanReport) -> str:
         [
             "# DeployLens Risk Report",
             "",
+            f"**Environment:** {report.environment}",
             f"**Risk score:** {report.risk_score}/100",
             f"**Risk level:** {report.risk_level}",
             f"**Estimated monthly resource cost:** ${report.cost_estimate.monthly_total_usd}",

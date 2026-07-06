@@ -9,10 +9,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt
 pytest
-python -m deploylens scan manifests/base --output reports/deploylens-report.md --json-output reports/deploylens-report.json
+make scan
 ```
 
-The report should show a high or critical score because the starter Kubernetes manifest intentionally has risky settings.
+The dev report should show a high or critical score because the starter dev manifest intentionally has risky settings. The prod report should stay low risk.
 
 ## Local App Test
 
@@ -35,7 +35,7 @@ With `kind`:
 kind create cluster --name deploylens
 docker build -t deploylens-sample:latest sample-app
 kind load docker-image deploylens-sample:latest --name deploylens
-kubectl apply -k manifests/base
+kubectl apply -k manifests/dev
 kubectl -n deploylens port-forward svc/deploylens-sample 8080:80
 ```
 

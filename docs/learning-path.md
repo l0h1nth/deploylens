@@ -59,6 +59,7 @@ Build:
 
 - Fix the risky manifests one by one
 - Watch DeployLens score go down
+- Compare `manifests/dev` and `manifests/prod`
 
 ## Phase 5: CI/CD
 
