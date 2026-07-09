@@ -1,10 +1,10 @@
 # DeployLens
 
-DeployLens is a DevOps portfolio project that answers one practical question:
+DeployLens is a DevOps project that answers one practical question:
 
 > Is this deployment safe, affordable, observable, and rollback-ready before it reaches production?
 
-Most beginner DevOps projects only deploy an app. DeployLens goes one level deeper: it builds a small CI/CD guardrail that reviews Kubernetes deployment changes and produces a risk report.
+ DeployLens goes one level deeper: it builds a small CI/CD guardrail that reviews Kubernetes deployment changes and produces a risk report.
 
 ## The Real Problem
 
