@@ -21,6 +21,10 @@ spec:
       containers:
         - name: web
           image: deploylens-sample:v0.1.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
           ports:
             - name: http
               containerPort: 8080

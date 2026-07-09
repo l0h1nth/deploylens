@@ -12,6 +12,7 @@ Teams often ship Kubernetes changes through pull requests, but many risky detail
 
 - No CPU or memory limits
 - Containers using `latest` tags
+- Containers running without a hardened security context
 - Missing liveness or readiness probes
 - Only one replica for production
 - Public `LoadBalancer` services created by accident
@@ -26,6 +27,7 @@ DeployLens scans those signals and creates a simple report that a developer, Dev
 - Provides Kubernetes manifests for that app
 - Includes a Python CLI: `deploylens`
 - Scans YAML manifests for production-readiness risks
+- Checks basic Kubernetes container security settings
 - Estimates monthly Kubernetes resource cost from CPU and memory requests
 - Generates Markdown and JSON reports
 - Runs automatically in GitHub Actions

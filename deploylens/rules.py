@@ -58,6 +58,7 @@ def check_deployment(
         resources = container.get("resources") or {}
         requests = resources.get("requests") or {}
         limits = resources.get("limits") or {}
+        security_context = container.get("securityContext") or {}
 
         if image.endswith(":latest") or ":" not in image:
             findings.append(
@@ -121,6 +122,51 @@ def check_deployment(
                     resource=name,
                     file=str(file),
                     points=points(rule_points, "K8S_MISSING_LIVENESS", 10),
+                )
+            )
+
+        if security_context.get("runAsNonRoot") is not True:
+            findings.append(
+                Finding(
+                    rule_id="SEC_RUN_AS_NON_ROOT",
+                    severity="high",
+                    title="Container is not required to run as non-root",
+                    message=f"Container '{container_name}' should set securityContext.runAsNonRoot: true.",
+                    resource=name,
+                    file=str(file),
+                    points=points(rule_points, "SEC_RUN_AS_NON_ROOT", 16),
+                )
+            )
+
+        if security_context.get("allowPrivilegeEscalation") is not False:
+            findings.append(
+                Finding(
+                    rule_id="SEC_PRIVILEGE_ESCALATION",
+                    severity="high",
+                    title="Container can allow privilege escalation",
+                    message=(
+                        f"Container '{container_name}' should set "
+                        "securityContext.allowPrivilegeEscalation: false."
+                    ),
+                    resource=name,
+                    file=str(file),
+                    points=points(rule_points, "SEC_PRIVILEGE_ESCALATION", 16),
+                )
+            )
+
+        if security_context.get("readOnlyRootFilesystem") is not True:
+            findings.append(
+                Finding(
+                    rule_id="SEC_WRITABLE_ROOT_FILESYSTEM",
+                    severity="medium",
+                    title="Container root filesystem is writable",
+                    message=(
+                        f"Container '{container_name}' should set "
+                        "securityContext.readOnlyRootFilesystem: true when possible."
+                    ),
+                    resource=name,
+                    file=str(file),
+                    points=points(rule_points, "SEC_WRITABLE_ROOT_FILESYSTEM", 8),
                 )
             )
 

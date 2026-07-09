@@ -15,3 +15,9 @@ rules:
     points: 10
   OPS_MISSING_ROLLBACK_DOC:
     points: 10
+  SEC_RUN_AS_NON_ROOT:
+    points: 16
+  SEC_PRIVILEGE_ESCALATION:
+    points: 16
+  SEC_WRITABLE_ROOT_FILESYSTEM:
+    points: 8

@@ -16,6 +16,7 @@ The `manifests/` folder describes how the sample app should run in Kubernetes.
 
 - one replica
 - `latest` image tag
+- no hardened container security context
 - no CPU or memory limits
 - no liveness/readiness probes
 - public `LoadBalancer` service
@@ -26,6 +27,7 @@ That gives DeployLens real problems to detect while you are learning.
 
 - two replicas
 - pinned image tag
+- container security context
 - CPU and memory requests and limits
 - liveness and readiness probes
 - internal `ClusterIP` service

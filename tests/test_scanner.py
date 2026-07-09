@@ -11,6 +11,9 @@ def test_scanner_finds_intentional_risks() -> None:
     assert "IMG_MUTABLE_TAG" in rule_ids
     assert "K8S_MISSING_LIMITS" in rule_ids
     assert "K8S_PUBLIC_LOADBALANCER" in rule_ids
+    assert "SEC_RUN_AS_NON_ROOT" in rule_ids
+    assert "SEC_PRIVILEGE_ESCALATION" in rule_ids
+    assert "SEC_WRITABLE_ROOT_FILESYSTEM" in rule_ids
     assert report.risk_score >= 60
 
 
