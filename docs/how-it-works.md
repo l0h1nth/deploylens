@@ -42,7 +42,7 @@ When you run:
 python -m deploylens validate manifests/dev
 python -m deploylens validate manifests/prod
 python -m deploylens scan manifests/dev --environment dev
-python -m deploylens scan manifests/prod --environment prod
+python -m deploylens scan manifests/prod --environment prod --max-monthly-cost 25
 ```
 
 DeployLens:
@@ -53,8 +53,9 @@ DeployLens:
 4. Checks each resource against rules
 5. Adds risk points for each issue
 6. Estimates monthly cost from CPU and memory requests
-7. Generates Markdown and JSON reports
-8. Exits with failure if validation fails or the score crosses the configured threshold
+7. Compares production cost against the configured budget
+8. Generates Markdown and JSON reports
+9. Exits with failure if validation fails, cost exceeds budget, or the score crosses the configured threshold
 
 In CI, dev is scanned in report-only mode. Prod is scanned with a real gate so high-risk production manifests fail the pipeline.
 

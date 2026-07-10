@@ -48,6 +48,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=80,
         help="Exit with code 2 when risk score is greater than or equal to this value.",
     )
+    scan.add_argument(
+        "--max-monthly-cost",
+        type=float,
+        default=None,
+        help="Exit with code 2 when estimated monthly resource cost is above this budget.",
+    )
     return parser
 
 
@@ -66,6 +72,17 @@ def main() -> None:
         args.json_output.write_text(json.dumps(report.to_dict(), indent=2), encoding="utf-8")
 
         print(markdown)
+
+        if (
+            args.max_monthly_cost is not None
+            and report.cost_estimate.monthly_total_usd > args.max_monthly_cost
+        ):
+            print(
+                "Cost budget exceeded: "
+                f"estimated ${report.cost_estimate.monthly_total_usd:.2f}, "
+                f"budget ${args.max_monthly_cost:.2f}"
+            )
+            raise SystemExit(2)
 
         if report.risk_score >= args.fail_threshold:
             raise SystemExit(2)

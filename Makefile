@@ -21,13 +21,13 @@ validate-prod:
 
 scan:
 	python -m deploylens scan manifests/dev --environment dev --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json --fail-threshold 101
-	python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80
+	python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80 --max-monthly-cost 25
 
 scan-dev:
 	python -m deploylens scan manifests/dev --environment dev --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json --fail-threshold 101
 
 scan-prod:
-	python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80
+	python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80 --max-monthly-cost 25
 
 app-build:
 	docker build -t deploylens-sample:latest sample-app

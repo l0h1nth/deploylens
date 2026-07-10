@@ -30,6 +30,7 @@ DeployLens scans those signals and creates a simple report that a developer, Dev
 - Scans YAML manifests for production-readiness risks
 - Checks basic Kubernetes container security settings
 - Estimates monthly Kubernetes resource cost from CPU and memory requests
+- Fails production scans when the estimated cost exceeds the configured budget
 - Generates Markdown and JSON reports
 - Runs automatically in GitHub Actions
 - Includes tests so the analyzer itself is trusted
@@ -124,6 +125,7 @@ The GitHub Actions workflow:
 - build the sample app image
 - generate dev and prod DeployLens risk reports
 - block production manifests when the risk score is 80 or higher
+- block production manifests when estimated monthly cost is above budget
 - upload the report as a CI artifact
 
 ## Interview Pitch

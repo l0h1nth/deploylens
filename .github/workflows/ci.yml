@@ -45,7 +45,7 @@ jobs:
         run: python -m deploylens scan manifests/dev --environment dev --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json --fail-threshold 101
 
       - name: Generate prod DeployLens report
-        run: python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80
+        run: python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80 --max-monthly-cost 25
 
       - name: Add reports to job summary
         run: |
