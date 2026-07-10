@@ -32,6 +32,12 @@ jobs:
       - name: Test
         run: pytest
 
+      - name: Validate dev Kubernetes manifests
+        run: python -m deploylens validate manifests/dev --json-output reports/deploylens-dev-validation.json
+
+      - name: Validate prod Kubernetes manifests
+        run: python -m deploylens validate manifests/prod --json-output reports/deploylens-prod-validation.json
+
       - name: Build sample app image
         run: docker build -t deploylens-sample:${{ github.sha }} sample-app
 
@@ -54,5 +60,7 @@ jobs:
           path: |
             reports/deploylens-dev-report.md
             reports/deploylens-dev-report.json
+            reports/deploylens-dev-validation.json
             reports/deploylens-prod-report.md
             reports/deploylens-prod-report.json
+            reports/deploylens-prod-validation.json

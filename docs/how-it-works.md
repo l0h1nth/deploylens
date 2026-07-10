@@ -39,6 +39,8 @@ The `deploylens/` package is our custom Python CLI.
 When you run:
 
 ```bash
+python -m deploylens validate manifests/dev
+python -m deploylens validate manifests/prod
 python -m deploylens scan manifests/dev --environment dev
 python -m deploylens scan manifests/prod --environment prod
 ```
@@ -46,12 +48,13 @@ python -m deploylens scan manifests/prod --environment prod
 DeployLens:
 
 1. Finds YAML files
-2. Loads Kubernetes resources
-3. Checks each resource against rules
-4. Adds risk points for each issue
-5. Estimates monthly cost from CPU and memory requests
-6. Generates Markdown and JSON reports
-7. Exits with failure if the score crosses the configured threshold
+2. Validates Kubernetes resource shape and wiring
+3. Loads Kubernetes resources
+4. Checks each resource against rules
+5. Adds risk points for each issue
+6. Estimates monthly cost from CPU and memory requests
+7. Generates Markdown and JSON reports
+8. Exits with failure if validation fails or the score crosses the configured threshold
 
 In CI, dev is scanned in report-only mode. Prod is scanned with a real gate so high-risk production manifests fail the pipeline.
 

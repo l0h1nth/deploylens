@@ -4,6 +4,7 @@ from pathlib import Path
 
 from deploylens.report import render_markdown
 from deploylens.scanner import scan_path
+from deploylens.validator import validate_path
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -12,6 +13,15 @@ def build_parser() -> argparse.ArgumentParser:
         description="Scan Kubernetes manifests and generate a deployment risk report.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    validate = subparsers.add_parser("validate", help="Validate Kubernetes YAML structure.")
+    validate.add_argument("path", type=Path, help="File or directory containing Kubernetes YAML.")
+    validate.add_argument(
+        "--json-output",
+        type=Path,
+        default=Path("reports/deploylens-validation.json"),
+        help="JSON validation report path.",
+    )
 
     scan = subparsers.add_parser("scan", help="Scan Kubernetes YAML manifests.")
     scan.add_argument("path", type=Path, help="File or directory containing Kubernetes YAML.")
@@ -59,3 +69,17 @@ def main() -> None:
 
         if report.risk_score >= args.fail_threshold:
             raise SystemExit(2)
+
+    if args.command == "validate":
+        report = validate_path(args.path)
+        args.json_output.parent.mkdir(parents=True, exist_ok=True)
+        args.json_output.write_text(json.dumps(report.to_dict(), indent=2), encoding="utf-8")
+
+        if report.passed:
+            print(f"Validation passed for {args.path}")
+            return
+
+        print(f"Validation failed for {args.path}")
+        for issue in report.issues:
+            print(f"- [{issue.code}] {issue.resource}: {issue.message} ({issue.file})")
+        raise SystemExit(2)

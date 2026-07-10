@@ -26,6 +26,7 @@ DeployLens scans those signals and creates a simple report that a developer, Dev
 - Runs a small sample web app
 - Provides Kubernetes manifests for that app
 - Includes a Python CLI: `deploylens`
+- Validates Kubernetes YAML before risk scoring
 - Scans YAML manifests for production-readiness risks
 - Checks basic Kubernetes container security settings
 - Estimates monthly Kubernetes resource cost from CPU and memory requests
@@ -61,6 +62,12 @@ Run tests:
 
 ```bash
 pytest
+```
+
+Validate Kubernetes manifests:
+
+```bash
+make validate
 ```
 
 Generate a deployment risk report:
@@ -113,6 +120,7 @@ The GitHub Actions workflow:
 
 - run Python tests
 - lint the code
+- validate dev and prod Kubernetes manifests
 - build the sample app image
 - generate dev and prod DeployLens risk reports
 - block production manifests when the risk score is 80 or higher
