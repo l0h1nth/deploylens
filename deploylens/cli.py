@@ -4,6 +4,7 @@ from pathlib import Path
 
 from deploylens.report import render_markdown
 from deploylens.scanner import scan_path
+from deploylens.policy import DeploymentPolicy, load_policy
 from deploylens.validator import validate_path
 
 
@@ -43,9 +44,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="JSON report path.",
     )
     scan.add_argument(
+        "--policy",
+        type=Path,
+        default=None,
+        help="Policy YAML containing risk and cost gates for the selected environment.",
+    )
+    scan.add_argument(
         "--fail-threshold",
         type=int,
-        default=80,
+        default=None,
         help="Exit with code 2 when risk score is greater than or equal to this value.",
     )
     scan.add_argument(
@@ -62,7 +69,20 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.command == "scan":
-        report = scan_path(args.path, environment=args.environment)
+        try:
+            policy = (
+                load_policy(args.policy, args.environment)
+                if args.policy is not None
+                else DeploymentPolicy()
+            )
+            policy = policy.with_overrides(
+                fail_threshold=args.fail_threshold,
+                max_monthly_cost=args.max_monthly_cost,
+            )
+        except ValueError as error:
+            parser.error(str(error))
+
+        report = scan_path(args.path, environment=args.environment, policy=policy)
         markdown = render_markdown(report)
 
         args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -74,17 +94,17 @@ def main() -> None:
         print(markdown)
 
         if (
-            args.max_monthly_cost is not None
-            and report.cost_estimate.monthly_total_usd > args.max_monthly_cost
+            policy.max_monthly_cost is not None
+            and report.cost_estimate.monthly_total_usd > policy.max_monthly_cost
         ):
             print(
                 "Cost budget exceeded: "
                 f"estimated ${report.cost_estimate.monthly_total_usd:.2f}, "
-                f"budget ${args.max_monthly_cost:.2f}"
+                f"budget ${policy.max_monthly_cost:.2f}"
             )
             raise SystemExit(2)
 
-        if report.risk_score >= args.fail_threshold:
+        if report.risk_score >= policy.fail_threshold:
             raise SystemExit(2)
 
     if args.command == "validate":

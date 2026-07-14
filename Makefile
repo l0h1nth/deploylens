@@ -20,14 +20,14 @@ validate-prod:
 	python -m deploylens validate manifests/prod --json-output reports/deploylens-prod-validation.json
 
 scan:
-	python -m deploylens scan manifests/dev --environment dev --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json --fail-threshold 101
-	python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80 --max-monthly-cost 25
+	python -m deploylens scan manifests/dev --environment dev --policy .deploylens.yml --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json
+	python -m deploylens scan manifests/prod --environment prod --policy .deploylens.yml --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json
 
 scan-dev:
-	python -m deploylens scan manifests/dev --environment dev --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json --fail-threshold 101
+	python -m deploylens scan manifests/dev --environment dev --policy .deploylens.yml --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json
 
 scan-prod:
-	python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80 --max-monthly-cost 25
+	python -m deploylens scan manifests/prod --environment prod --policy .deploylens.yml --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json
 
 app-build:
 	docker build -t deploylens-sample:latest sample-app

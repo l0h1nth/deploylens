@@ -31,6 +31,7 @@ DeployLens scans those signals and creates a simple report that a developer, Dev
 - Checks basic Kubernetes container security settings
 - Estimates monthly Kubernetes resource cost from CPU and memory requests
 - Fails production scans when the estimated cost exceeds the configured budget
+- Stores environment-specific risk and cost gates as versioned policy-as-code
 - Generates Markdown and JSON reports
 - Publishes the report as a pull request comment
 - Runs automatically in GitHub Actions
@@ -42,6 +43,7 @@ DeployLens scans those signals and creates a simple report that a developer, Dev
 sample-app/              # Small app we deploy and analyze
 deploylens/              # The custom DevOps analyzer CLI
 rules/                   # Rule configuration and scoring weights
+.deploylens.yml          # Environment-specific deployment policy
 manifests/dev/           # Dev Kubernetes manifests with intentional learning risks
 manifests/prod/          # Production-style Kubernetes manifests gated by CI
 reports/                 # Generated report output
@@ -127,6 +129,7 @@ The GitHub Actions workflow:
 - generate dev and prod DeployLens risk reports
 - block production manifests when the risk score is 80 or higher
 - block production manifests when estimated monthly cost is above budget
+- load reviewable dev and prod gates from `.deploylens.yml`
 - comment on pull requests with the dev and prod reports
 - upload the report as a CI artifact
 

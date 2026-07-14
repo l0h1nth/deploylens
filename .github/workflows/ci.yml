@@ -44,10 +44,10 @@ jobs:
         run: docker build -t deploylens-sample:${{ github.sha }} sample-app
 
       - name: Generate dev DeployLens report
-        run: python -m deploylens scan manifests/dev --environment dev --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json --fail-threshold 101
+        run: python -m deploylens scan manifests/dev --environment dev --policy .deploylens.yml --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json
 
       - name: Generate prod DeployLens report
-        run: python -m deploylens scan manifests/prod --environment prod --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json --fail-threshold 80 --max-monthly-cost 25
+        run: python -m deploylens scan manifests/prod --environment prod --policy .deploylens.yml --output reports/deploylens-prod-report.md --json-output reports/deploylens-prod-report.json
 
       - name: Add reports to job summary
         run: |

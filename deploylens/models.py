@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
 
+from deploylens.policy import DeploymentPolicy
+
 
 @dataclass(frozen=True)
 class Finding:
@@ -46,6 +48,7 @@ class ScanReport:
     scanned_files: list[str]
     findings: list[Finding] = field(default_factory=list)
     cost_estimate: CostEstimate = field(default_factory=CostEstimate)
+    policy: DeploymentPolicy | None = None
 
     @property
     def risk_score(self) -> int:
@@ -62,7 +65,7 @@ class ScanReport:
         return "low"
 
     def to_dict(self) -> dict[str, object]:
-        return {
+        data: dict[str, object] = {
             "environment": self.environment,
             "risk_score": self.risk_score,
             "risk_level": self.risk_level,
@@ -70,3 +73,10 @@ class ScanReport:
             "cost_estimate": self.cost_estimate.to_dict(),
             "findings": [finding.to_dict() for finding in self.findings],
         }
+        if self.policy is not None:
+            data["policy"] = {
+                "source": self.policy.source,
+                "fail_threshold": self.policy.fail_threshold,
+                "max_monthly_cost": self.policy.max_monthly_cost,
+            }
+        return data

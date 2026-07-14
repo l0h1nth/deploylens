@@ -1,0 +1,9 @@
+version: 1
+
+environments:
+  dev:
+    fail_threshold: 101
+
+  prod:
+    fail_threshold: 80
+    max_monthly_cost: 25

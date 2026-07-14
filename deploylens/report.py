@@ -24,6 +24,22 @@ def render_markdown(report: ScanReport) -> str:
     if not findings:
         findings = "No findings. This deployment looks clean for the current rule set."
 
+    policy_lines: list[str] = []
+    if report.policy is not None:
+        cost_budget = (
+            f"${report.policy.max_monthly_cost:.2f}"
+            if report.policy.max_monthly_cost is not None
+            else "not enforced"
+        )
+        policy_lines = [
+            "## Applied Policy",
+            "",
+            f"- Source: `{report.policy.source}`",
+            f"- Risk failure threshold: {report.policy.fail_threshold}",
+            f"- Monthly cost budget: {cost_budget}",
+            "",
+        ]
+
     return "\n".join(
         [
             "# DeployLens Risk Report",
@@ -48,6 +64,7 @@ def render_markdown(report: ScanReport) -> str:
             f"- Memory requests/month: ${report.cost_estimate.monthly_memory_usd:.2f}",
             f"- Total/month: ${report.cost_estimate.monthly_total_usd:.2f}",
             "",
+            *policy_lines,
             "## Findings",
             "",
             findings,

@@ -4,10 +4,15 @@ from typing import Any
 from deploylens.cost import estimate_resource_cost
 from deploylens.models import Finding, ScanReport
 from deploylens.parser import discover_yaml_files, load_yaml_documents
+from deploylens.policy import DeploymentPolicy
 from deploylens.rules import check_deployment, check_rollback_docs, check_service, load_rule_points
 
 
-def scan_path(path: Path, environment: str = "default") -> ScanReport:
+def scan_path(
+    path: Path,
+    environment: str = "default",
+    policy: DeploymentPolicy | None = None,
+) -> ScanReport:
     yaml_files = discover_yaml_files(path)
     rule_points = load_rule_points()
     findings: list[Finding] = []
@@ -30,4 +35,5 @@ def scan_path(path: Path, environment: str = "default") -> ScanReport:
         scanned_files=[str(file) for file in yaml_files],
         findings=findings,
         cost_estimate=estimate_resource_cost(resources),
+        policy=policy,
     )

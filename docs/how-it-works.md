@@ -41,8 +41,8 @@ When you run:
 ```bash
 python -m deploylens validate manifests/dev
 python -m deploylens validate manifests/prod
-python -m deploylens scan manifests/dev --environment dev
-python -m deploylens scan manifests/prod --environment prod --max-monthly-cost 25
+python -m deploylens scan manifests/dev --environment dev --policy .deploylens.yml
+python -m deploylens scan manifests/prod --environment prod --policy .deploylens.yml
 ```
 
 DeployLens:
@@ -53,13 +53,17 @@ DeployLens:
 4. Checks each resource against rules
 5. Adds risk points for each issue
 6. Estimates monthly cost from CPU and memory requests
-7. Compares production cost against the configured budget
-8. Generates Markdown and JSON reports
-9. Exits with failure if validation fails, cost exceeds budget, or the score crosses the configured threshold
+7. Loads the selected environment's risk and cost gates from `.deploylens.yml`
+8. Compares production cost against the configured budget
+9. Generates Markdown and JSON reports
+10. Exits with failure if validation fails, cost exceeds budget, or the score crosses the configured threshold
 
 In CI, dev is scanned in report-only mode. Prod is scanned with a real gate so high-risk production manifests fail the pipeline.
 
 On pull requests, the CI workflow also posts the dev and prod reports as a single bot comment. If the workflow runs again, it updates the existing comment instead of creating duplicates.
+
+The policy file is committed with the application, so changes to deployment gates have a Git
+history and can be reviewed like code. CLI flags can override the file for one-off local tests.
 
 ## Why This Is DevOps
 
