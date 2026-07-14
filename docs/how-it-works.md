@@ -59,6 +59,8 @@ DeployLens:
 
 In CI, dev is scanned in report-only mode. Prod is scanned with a real gate so high-risk production manifests fail the pipeline.
 
+On pull requests, the CI workflow also posts the dev and prod reports as a single bot comment. If the workflow runs again, it updates the existing comment instead of creating duplicates.
+
 ## Why This Is DevOps
 
 This project teaches the real DevOps workflow:

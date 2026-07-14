@@ -4,7 +4,7 @@ DeployLens is a DevOps project that answers one practical question:
 
 > Is this deployment safe, affordable, observable, and rollback-ready before it reaches production?
 
- DeployLens goes one level deeper: it builds a small CI/CD guardrail that reviews Kubernetes deployment changes and produces a risk report.
+DeployLens goes one level deeper: it builds a small CI/CD guardrail that reviews Kubernetes deployment changes and produces a risk report.
 
 ## The Real Problem
 
@@ -32,6 +32,7 @@ DeployLens scans those signals and creates a simple report that a developer, Dev
 - Estimates monthly Kubernetes resource cost from CPU and memory requests
 - Fails production scans when the estimated cost exceeds the configured budget
 - Generates Markdown and JSON reports
+- Publishes the report as a pull request comment
 - Runs automatically in GitHub Actions
 - Includes tests so the analyzer itself is trusted
 
@@ -126,6 +127,7 @@ The GitHub Actions workflow:
 - generate dev and prod DeployLens risk reports
 - block production manifests when the risk score is 80 or higher
 - block production manifests when estimated monthly cost is above budget
+- comment on pull requests with the dev and prod reports
 - upload the report as a CI artifact
 
 ## Interview Pitch
