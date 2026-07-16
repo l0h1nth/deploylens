@@ -43,6 +43,12 @@ jobs:
       - name: Build sample app image
         run: docker build -t deploylens-sample:${{ github.sha }} sample-app
 
+      - name: Smoke test sample app image
+        run: |
+          docker run --detach --rm --name deploylens-smoke --publish 127.0.0.1:8080:8080 deploylens-sample:${{ github.sha }}
+          trap 'docker rm --force deploylens-smoke >/dev/null 2>&1 || true' EXIT
+          curl --fail --silent --show-error --retry 10 --retry-all-errors --retry-delay 1 http://127.0.0.1:8080/healthz
+
       - name: Generate dev DeployLens report
         run: python -m deploylens scan manifests/dev --environment dev --policy .deploylens.yml --output reports/deploylens-dev-report.md --json-output reports/deploylens-dev-report.json
 

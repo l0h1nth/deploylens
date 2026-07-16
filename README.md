@@ -130,6 +130,7 @@ The GitHub Actions workflow:
 - block production manifests when the risk score is 80 or higher
 - block production manifests when estimated monthly cost is above budget
 - load reviewable dev and prod gates from `.deploylens.yml`
+- start the built container and smoke-test its `/healthz` endpoint
 - comment on pull requests with the dev and prod reports
 - upload the report as a CI artifact
 
